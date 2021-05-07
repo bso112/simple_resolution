@@ -13,20 +13,20 @@ interface MemoDatasource {
     @Query("SELECT * FROM memo")
     fun getAll() : LiveData<List<MemoEntity>>
 
-    @Query("SELECT * FROM memo LIMIT 1")
+    @Query("SELECT * FROM memo ORDER BY RANDOM() LIMIT 1")
     fun getRandomMemo() : LiveData<MemoEntity>
 
     @Insert
     fun createMemo(content : MemoEntity) : Completable
-//
-//    @Query("DELETE FROM Memo")
-//    fun deleteAllMemo() : LiveData<Unit>
-//
-//    @Update
-//    fun updateMemo(content : MemoEntity) : LiveData<Unit>
-//
-//    @Delete
-//    fun deleteMemo(memo : MemoEntity) : LiveData<Unit>
+
+    @Query("DELETE FROM Memo")
+    fun deleteAllMemo() : Completable
+
+    @Update
+    fun updateMemo(content : MemoEntity) : Completable
+
+    @Delete
+    fun deleteMemo(memo : MemoEntity) : Completable
 
 
 

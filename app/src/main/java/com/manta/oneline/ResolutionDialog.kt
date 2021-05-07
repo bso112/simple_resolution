@@ -51,18 +51,25 @@ class ResolutionDialog() : DialogFragment() {
         isLoading.value = true
         getMemoUsecase.getRandomMemo()
             .observe(requireActivity()) { memoData ->
+                if (memoData == null){
+                    isEditing.value = true
+                    isLoading.value = false
+                    return@observe
+                }
+
                 isLoading.value = false
-                binding.tvResolution.text = memoData?.content ?: ""
+                binding.tvResolution.text = memoData.content
+
             }
 
-//
-//
-//        binding.submitBtn.setOnClickListener {
-//            isLoading.value = true
-//            isEditing.value = false
-//            createMemousecase.createMemo(createMemoFromInput())
-//                .observe(requireActivity()) { isLoading.value = false }
-//        }
+
+
+        binding.submitBtn.setOnClickListener {
+            isLoading.value = true
+            isEditing.value = false
+            createMemousecase.createMemo(createMemoFromInput())
+                .subscribeOnBackground {  isLoading.value = false  }
+        }
 
         binding.card.setOnClickListener {
             dismiss()
@@ -89,7 +96,6 @@ class ResolutionDialog() : DialogFragment() {
         super.onDismiss(dialog)
         (requireActivity() as? DialogInterface.OnDismissListener)?.onDismiss(dialog)
     }
-
 
 
 }
