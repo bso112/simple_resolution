@@ -7,6 +7,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="dialog"
+            type="com.manta.oneline.ResolutionDialog" />
     </data>
 
     <RelativeLayout
@@ -22,38 +27,75 @@
             app:cardBackgroundColor="@color/black"
             app:cardCornerRadius="50dp">
 
-            <ProgressBar
-                android:id="@+id/progress"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:duration="1"
-                android:fromDegrees="0"
-                android:toDegrees="1080" />
 
-            <TextView
-                android:id="@+id/tv_resolution"
-                style="@style/TextAppearance.AppCompat.Large"
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:duration="1"
+                    android:fromDegrees="0"
+                    android:toDegrees="1080"
+                    android:visibility="@{dialog.isLoading() ? View.VISIBLE : View.GONE}" />
+
+                <TextView
+                    android:id="@+id/tv_resolution"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/advicefont"
+                    android:minWidth="200dp"
+                    android:padding="25dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:visibility="@{dialog.isEditing() ? View.GONE : View.VISIBLE}" />
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/advicefont"
-                android:gravity="center"
-                android:minWidth="200dp"
-                android:padding="25dp"
-                android:textAlignment="center"
-                android:textColor="@color/white" />
+                android:visibility="@{dialog.isEditing() ? View.VISIBLE : View.GONE}" >
 
-            <EditText
-                android:id="@+id/et_resolution"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="당신은 최고로 멋져요"
-                android:padding="25dp"
-                android:fontFamily="@font/advicefont"
-                android:gravity="center"
-                android:textColorHint="@color/gray"
-                android:textColor="@color/white"/>
+                <EditText
+                    android:id="@+id/et_resolution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/advicefont"
+                    android:hint="당신은 최고로 멋져요"
+                    android:minWidth="200dp"
+                    android:padding="25dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gray" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/et_resolution"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="30dp">
+
+                    <TextView
+                        android:id="@+id/submit_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/teal_200"
+                        android:fontFamily="@font/advicefont"
+                        android:padding="10dp"
+                        android:text="마음에 새기기"
+                        android:textColor="@color/white" />
+
+                </androidx.cardview.widget.CardView>
+
+
+            </RelativeLayout>
+
+
         </androidx.cardview.widget.CardView>
 
 

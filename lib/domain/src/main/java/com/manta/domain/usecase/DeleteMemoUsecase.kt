@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 
 
-class DeleteMemoUsecase @Inject constructor(private val repo : Repository) {
-    fun deleteMemo(memo : MemoData) = repo.deleteMemo(memo)
-}
+//class DeleteMemoUsecase @Inject constructor(private val repo : Repository) {
+//    fun deleteMemo(memo : MemoData) = repo.deleteMemo(memo)
+//}
