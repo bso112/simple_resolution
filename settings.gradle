@@ -1,0 +1,6 @@
+include ':data'
+include ':domain'
+include ':app'
+project(':domain').projectDir = new File(rootDir, 'lib/domain/')
+project(':data').projectDir = new File(rootDir, 'lib/data/')
+rootProject.name = "oneline"
