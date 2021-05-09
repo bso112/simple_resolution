@@ -1,6 +1,7 @@
 package com.manta.oneline
 
-interface ItemClickable {
 
+
+interface ItemClickable {
     fun setOnItemClick(onItemClick : ()->Unit)
 }

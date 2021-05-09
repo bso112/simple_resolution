@@ -13,19 +13,23 @@
             type="com.manta.oneline.ResolutionDialog" />
     </data>
 
-    <TextView
-        android:id="@+id/tv_resolution"
-        style="@style/TextAppearance.AppCompat.Large"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/advicefont"
-        android:minWidth="200dp"
-        android:padding="25dp"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        tools:background="@color/black"
-        tools:text="당신은 최고로 멋져요"
-        android:visibility="@{dialog.isEditing() ? View.GONE : View.VISIBLE}" />
+
+
+        <TextView
+            android:id="@+id/tv_resolution"
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/advicefont"
+            android:gravity="center"
+            android:minWidth="200dp"
+            android:padding="25dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            tools:background="@color/black"
+            tools:text="당신은 최고로 멋져요"
+            android:visibility="@{dialog.isEditing() ? View.GONE : View.VISIBLE}" />
+
 </layout>
 
 

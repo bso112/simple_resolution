@@ -46,16 +46,16 @@
                 android:visibility="@{dialog.isLoading() ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_resolution"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_resolution"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 app:adapter="@{adapter}"
-                app:onItemClick="@{()->dialog.dismiss()}"
-                app:horizontalSwipe="@{true}"
                 app:items="@{dialog.memoList}"
+                android:visibility="@{dialog.isEditing() ? View.GONE : View.VISIBLE}"
                 tools:listitem="@layout/resoultion_text"
+                tools:visibility="visible"
                 tools:itemCount="1"
                 />
 

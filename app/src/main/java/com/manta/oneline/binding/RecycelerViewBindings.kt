@@ -4,18 +4,29 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.manta.oneline.ItemClickable
+import androidx.viewpager2.widget.ViewPager2
 
-@BindingAdapter("adapter", "horizontalSwipe", "items", "onItemClick", requireAll = false)
-fun RecyclerView.setAdapter(listAdpater: ListAdapter<*, *>?, horizontalSwipe: Boolean?, items : List<Nothing>?, onItemClick : ()->Unit) {
+
+@BindingAdapter("adapter", "horizontalSwipe", "items", requireAll = false)
+fun RecyclerView.setAdapter(
+    listAdpater: ListAdapter<*, *>?,
+    horizontalSwipe: Boolean?,
+    items: List<Nothing>?
+) {
     this.adapter = listAdpater
     listAdpater?.submitList(items)
-    val itemClickable = listAdpater as? ItemClickable
-    itemClickable?.setOnItemClick(onItemClick)
     if (horizontalSwipe != null && horizontalSwipe) {
         this.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     } else {
         this.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
     }
-
 }
+
+@BindingAdapter("itemAnimated")
+fun RecyclerView.isItemAnimated(
+    itemAnimated : Boolean
+){
+    if(!itemAnimated)
+        itemAnimator = null
+}
+

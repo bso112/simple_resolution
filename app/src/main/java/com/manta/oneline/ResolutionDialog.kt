@@ -1,11 +1,11 @@
 package com.manta.oneline
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +18,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-
 class ResolutionDialog() : DialogFragment() {
 
-    val binding: DialogResolutionBinding by lazy { DialogResolutionBinding.inflate(layoutInflater) }
-    val disposables  = CompositeDisposable()
+    lateinit var binding: DialogResolutionBinding
+    val disposables = CompositeDisposable()
 
     val isLoading = MutableLiveData<Boolean>()
     val isEditing = MutableLiveData<Boolean>()
@@ -34,10 +33,23 @@ class ResolutionDialog() : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = DialogResolutionBinding.inflate(inflater, container, false)
         binding.apply {
             dialog = this@ResolutionDialog
             lifecycleOwner = this@ResolutionDialog
-            adapter = ResolutionAdapter()
+            adapter = ResolutionAdapter().also {
+                it.setOnItemClick(object : ResolutionAdapter.OnClickItemListener {
+                    override fun onClick() {
+                        dismiss()
+                    }
+
+                    override fun onLongClik() {
+                        isEditing.value = true
+                    }
+                })
+
+            }
+
         }
         return binding.root
     }
@@ -55,11 +67,16 @@ class ResolutionDialog() : DialogFragment() {
             isLoading.value = true
             isEditing.value = false
 
-            Repository.memoDao.createMemo(createMemoFromInput()).subscribeOnBackground(disposables) {
-                isLoading.value = false
-                updateMemoText()
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
 
-            }
+            Repository.memoDao.createMemo(createMemoFromInput())
+                .subscribeOnBackground(disposables) {
+                    isLoading.value = false
+                    updateMemoText()
+
+                }
+            binding.etResolution.text.clear()
         }
 
 
@@ -70,10 +87,6 @@ class ResolutionDialog() : DialogFragment() {
         binding.card.setOnLongClickListener {
             isEditing.value = true
             true
-        }
-
-        isLoading.observe(requireActivity()) {
-         //   binding.tvResolution.text = ""
         }
 
     }
@@ -87,16 +100,16 @@ class ResolutionDialog() : DialogFragment() {
                 isLoading.value = false
             },
             onError = { throw it },
+
+
+
             onSuccess = {
                 isLoading.value = false
-                memoList.value = listOf(Memo("sdsdsd", "kjkj"), Memo("sfdfdsdsd", "kjkj"),Memo("ssdsdsd", "kjkj"))
-
-                if(it.isEmpty()){
+                memoList.value = it
+                //binding.rvResolution.scrollToPosition(0)
+                if (it.isEmpty()) {
                     isEditing.value = true
                 }
-
-
-
             })
     }
 
