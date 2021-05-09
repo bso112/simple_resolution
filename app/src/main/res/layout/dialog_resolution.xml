@@ -12,6 +12,11 @@
         <variable
             name="dialog"
             type="com.manta.oneline.ResolutionDialog" />
+
+        <variable
+            name="adapter"
+            type="com.manta.oneline.ResolutionAdapter" />
+
     </data>
 
     <RelativeLayout
@@ -28,46 +33,52 @@
             app:cardCornerRadius="50dp">
 
 
-                <ProgressBar
-                    android:id="@+id/progress"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:duration="1"
-                    android:fromDegrees="0"
-                    android:toDegrees="1080"
-                    android:visibility="@{dialog.isLoading() ? View.VISIBLE : View.GONE}" />
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:duration="1"
+                android:fromDegrees="0"
+                android:toDegrees="1080"
+                android:visibility="@{dialog.isLoading() ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/tv_resolution"
-                    style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/advicefont"
-                    android:minWidth="200dp"
-                    android:padding="25dp"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:visibility="@{dialog.isEditing() ? View.GONE : View.VISIBLE}" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_resolution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:adapter="@{adapter}"
+                app:onItemClick="@{()->dialog.dismiss()}"
+                app:horizontalSwipe="@{true}"
+                app:items="@{dialog.memoList}"
+                tools:listitem="@layout/resoultion_text"
+                tools:itemCount="1"
+                />
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{dialog.isEditing() ? View.VISIBLE : View.GONE}" >
+                android:padding="10dp"
+                android:visibility="@{dialog.isEditing() ? View.VISIBLE : View.GONE}">
+
 
                 <EditText
                     android:id="@+id/et_resolution"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:fontFamily="@font/advicefont"
                     android:hint="당신은 최고로 멋져요"
+                    android:textAlignment="center"
+                    android:background="@color/transparent"
                     android:minWidth="200dp"
-                    android:padding="25dp"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="15dp"
                     android:textColor="@color/white"
                     android:textColorHint="@color/gray" />
 
@@ -76,8 +87,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/et_resolution"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="10dp"
                     app:cardCornerRadius="30dp">
 
                     <TextView

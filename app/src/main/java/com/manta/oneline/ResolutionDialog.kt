@@ -2,43 +2,43 @@ package com.manta.oneline
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
-import com.manta.domain.data.MemoData
-import com.manta.domain.usecase.CreateMemoUsecase
-import com.manta.domain.usecase.GetRandomMemoUsecase
+import androidx.recyclerview.widget.RecyclerView
+import com.manta.oneline.AppExt.subscribeOnBackground
+import com.manta.oneline.data.Memo
 import com.manta.oneline.databinding.DialogResolutionBinding
-import dagger.hilt.android.AndroidEntryPoint
+import com.manta.oneline.datasource.Repository
 import io.reactivex.disposables.CompositeDisposable
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
-@AndroidEntryPoint
+
+
 class ResolutionDialog() : DialogFragment() {
-    @Inject
-    lateinit var createMemousecase: CreateMemoUsecase
-
-    @Inject
-    lateinit var getMemoUsecase: GetRandomMemoUsecase
-
 
     val binding: DialogResolutionBinding by lazy { DialogResolutionBinding.inflate(layoutInflater) }
+    val disposables  = CompositeDisposable()
 
-    var isLoading = MutableLiveData<Boolean>()
-    var isEditing = MutableLiveData<Boolean>()
+    val isLoading = MutableLiveData<Boolean>()
+    val isEditing = MutableLiveData<Boolean>()
+    val memoList = MutableLiveData<List<Memo>>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.dialog = this
-        binding.lifecycleOwner = this
+        binding.apply {
+            dialog = this@ResolutionDialog
+            lifecycleOwner = this@ResolutionDialog
+            adapter = ResolutionAdapter()
+        }
         return binding.root
     }
 
@@ -48,28 +48,20 @@ class ResolutionDialog() : DialogFragment() {
             window?.setBackgroundDrawableResource(android.R.color.transparent)
         }
 
-        isLoading.value = true
-        getMemoUsecase.getRandomMemo()
-            .observe(requireActivity()) { memoData ->
-                if (memoData == null){
-                    isEditing.value = true
-                    isLoading.value = false
-                    return@observe
-                }
 
-                isLoading.value = false
-                binding.tvResolution.text = memoData.content
-
-            }
-
-
+        updateMemoText()
 
         binding.submitBtn.setOnClickListener {
             isLoading.value = true
             isEditing.value = false
-            createMemousecase.createMemo(createMemoFromInput())
-                .subscribeOnBackground {  isLoading.value = false  }
+
+            Repository.memoDao.createMemo(createMemoFromInput()).subscribeOnBackground(disposables) {
+                isLoading.value = false
+                updateMemoText()
+
+            }
         }
+
 
         binding.card.setOnClickListener {
             dismiss()
@@ -81,12 +73,35 @@ class ResolutionDialog() : DialogFragment() {
         }
 
         isLoading.observe(requireActivity()) {
-            binding.tvResolution.text = ""
+         //   binding.tvResolution.text = ""
         }
 
     }
 
-    private fun createMemoFromInput() = MemoData(binding.etResolution.text.toString(), getDate())
+
+    private fun updateMemoText() {
+        isLoading.value = true
+        Repository.memoDao.getRandomMemo().subscribeOnBackground(disposables,
+            onComplete = {
+                isEditing.value = true
+                isLoading.value = false
+            },
+            onError = { throw it },
+            onSuccess = {
+                isLoading.value = false
+                memoList.value = listOf(Memo("sdsdsd", "kjkj"), Memo("sfdfdsdsd", "kjkj"),Memo("ssdsdsd", "kjkj"))
+
+                if(it.isEmpty()){
+                    isEditing.value = true
+                }
+
+
+
+            })
+    }
+
+
+    private fun createMemoFromInput() = Memo(binding.etResolution.text.toString(), getDate())
 
     fun getDate(): String {
         return SimpleDateFormat("yyyy-MM-dd", resources.configuration.locale).format(Date())
@@ -94,6 +109,7 @@ class ResolutionDialog() : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        disposables.dispose()
         (requireActivity() as? DialogInterface.OnDismissListener)?.onDismiss(dialog)
     }
 

@@ -1,9 +1,20 @@
 package com.manta.oneline
 
+import android.annotation.SuppressLint
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import android.content.Context
 
-@HiltAndroidApp
 class App : Application() {
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        context = this
+    }
+
 
 }
